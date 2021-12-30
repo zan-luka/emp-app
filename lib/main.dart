@@ -1,4 +1,6 @@
+import 'package:emp_flutter_app/openMaps.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Kolesarjanci',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -97,6 +99,14 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             const Text(
               'You have pushed the button this many times:',
+            ),
+            InkWell(
+              onTap: (){
+                MapUtils.openMap("https://www.google.com/maps/dir/?api=1&destination=45.90415729448569,13.91227001019901&waypoints=45.88841973257892, 13.904491768171905|45.89741275863526,13.905123017668604&travelmode=walking&map_action=map&basemap=terrain");
+              },
+              child: const Text(
+                "BOGATA MAPA",
+              ),
             ),
             Text(
               '$_counter',
