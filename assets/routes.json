@@ -1,0 +1,20 @@
+{
+    "poti": [
+        {
+            "id": 1,
+            "naziv": "Izvir reke Hubelj",
+            "tezavnost": "srednje težka",
+            "opis": "fml",
+            "vzpon": 121,
+            "url": "https://www.google.com/maps/dir/?api=1&destination=45.90415729448569,13.91227001019901&waypoints=45.88841973257892,13.904491768171905|45.89741275863526,13.905123017668604&travelmode=walking&map_action=map&basemap=terrain"
+        },
+        {
+            "id": 2,
+            "naziv": "Vipava - Miren",
+            "tezavnost": "srednje težka",
+            "opis": "dolga k prasica",
+            "vzpon": 104,
+            "url": "https://www.google.com/maps/dir/?api=1&destination=45.89406397153731,13.608472037534517&waypoints=45.84619433967417,13.952603839724338|45.86722434683604,13.84836189063282|45.895017179179284,13.73820695477075|45.88759290607055,13.732756248994598|45.89571531329511,13.673084659938311|45.88267839413322,13.617175514353393&travelmode=walking&map_action=map&basemap=terrain"
+        }
+    ]
+}

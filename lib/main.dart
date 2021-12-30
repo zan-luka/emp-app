@@ -2,6 +2,9 @@ import 'package:emp_flutter_app/openMaps.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'dart:convert';
+import 'package:flutter/services.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -63,6 +66,16 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  List _items = [];
+
+  Future<void> readJson() async {
+    final String response = await rootBundle.loadString('assets/routes.json');
+    final data = await json.decode(response);
+    setState(() {
+      _items = data["poti"];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -112,6 +125,26 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            ElevatedButton(
+                onPressed: readJson,
+                child: const Text("Poti")
+            ),
+            _items.isNotEmpty
+            ? Expanded(
+                child: ListView.builder(
+                    itemCount: _items.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: ListTile(
+                          title: Text(_items[index]["naziv"]),
+                          subtitle: Text(_items[index]["opis"]),
+                          onTap: () {MapUtils.openMap(_items[index]["url"]);},
+                        ),
+                      );
+                    },
+                ),
+            )
+            :Container()
           ],
         ),
       ),
