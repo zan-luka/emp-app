@@ -110,9 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
             InkWell(
               onTap: (){
                 MapUtils.openMap("https://www.google.com/maps/dir/?api=1&destination=45.90415729448569,13.91227001019901&waypoints=45.88841973257892, 13.904491768171905|45.89741275863526,13.905123017668604&travelmode=walking&map_action=map&basemap=terrain");
@@ -120,10 +117,6 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text(
                 "BOGATA MAPA",
               ),
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
             ),
             ElevatedButton(
                 onPressed: readJson,
@@ -138,7 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: ListTile(
                           title: Text(_items[index]["naziv"]),
                           subtitle: Text(_items[index]["opis"]),
-                          onTap: () {MapUtils.openMap(_items[index]["url"]);},
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FirstRoute(naziv: _items[index]["naziv"], opis: _items[index]["opis"], tezavnost: _items[index]["tezavnost"], vzpon: _items[index]["vzpon"], url: _items[index]["url"], like: _items[index]["like"], dislike: _items[index]["dislike"],)));
+                            //MapUtils.openMap(_items[index]["url"]);
+                            },
                         ),
                       );
                     },
@@ -147,12 +143,60 @@ class _MyHomePageState extends State<MyHomePage> {
             :Container()
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
+class FirstRoute extends StatelessWidget {
+  final String naziv;
+  final String opis;
+  final String tezavnost;
+  final int vzpon;
+  final String url;
+  final int like;
+  final int dislike;
+
+  const FirstRoute({Key? key, required this.naziv, required this.opis, required this.tezavnost, required this.vzpon, required this.url, required this.like, required this.dislike}) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(naziv),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.topCenter,
+              child: Text(naziv, style: TextStyle(fontSize: 50)),
+              margin: EdgeInsets.only(top: 30, bottom: 30),
+            ),
+            Container(
+              alignment: Alignment.topRight,
+              child: Text("Ratio: " + ((like/(like+dislike)*100).toInt()).toString(), style: TextStyle(fontSize: 20)),
+              margin: EdgeInsets.only(right: 20),
+            ),
+            Container(
+              child: Text(opis, style: TextStyle(fontSize: 20)),
+              margin: EdgeInsets.only(bottom: 30),
+            ),
+            Container(
+              child: Text("Težavnost: " + tezavnost, style: TextStyle(fontSize: 20)),
+              margin: EdgeInsets.only(bottom: 30),
+            ),
+            Container(
+              child: Text("Vzpon: " + vzpon.toString() + "m", style: TextStyle(fontSize: 20)),
+              margin: EdgeInsets.only(bottom: 30),
+            ),
+
+            ElevatedButton(onPressed: () {MapUtils.openMap(url);}, child: Text("Navodila za pot")),
+          ],
+        ),
+      ),
+    );
+  }}
