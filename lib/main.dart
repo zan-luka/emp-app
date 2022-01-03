@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'pallete.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Pallete.kToDark,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -53,26 +55,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   List _items = [];
 
   Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/routes.json');
-    final data = await json.decode(response);
+    final response =  await http.get("https://guarded-dusk-58497.herokuapp.com/poti");
+    //final String response = await rootBundle.loadString('assets/routes.json');
+    final data = await json.decode(response.body);
     setState(() {
-      _items = data["poti"];
+      _items = data;
     });
   }
 
@@ -132,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           title: Text(_items[index]["naziv"]),
                           subtitle: Text(_items[index]["opis"]),
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => FirstRoute(naziv: _items[index]["naziv"], opis: _items[index]["opis"], tezavnost: _items[index]["tezavnost"], vzpon: _items[index]["vzpon"], url: _items[index]["url"], like: _items[index]["like"], dislike: _items[index]["dislike"],)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FirstRoute(id: _items[index]["id"], naziv: _items[index]["naziv"], opis: _items[index]["opis"], tezavnost: _items[index]["tezavnost"], vzpon: _items[index]["vzpon"], url: _items[index]["url"], like: _items[index]["nice"], dislike: _items[index]["notnice"],)));
                             //MapUtils.openMap(_items[index]["url"]);
                             },
                         ),
@@ -149,6 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class FirstRoute extends StatelessWidget {
+  final int id;
   final String naziv;
   final String opis;
   final String tezavnost;
@@ -157,7 +148,7 @@ class FirstRoute extends StatelessWidget {
   final int like;
   final int dislike;
 
-  const FirstRoute({Key? key, required this.naziv, required this.opis, required this.tezavnost, required this.vzpon, required this.url, required this.like, required this.dislike}) : super(key: key);
+  const FirstRoute({Key? key, required this.id, required this.naziv, required this.opis, required this.tezavnost, required this.vzpon, required this.url, required this.like, required this.dislike}) : super(key: key);
 
 
   @override
@@ -195,6 +186,17 @@ class FirstRoute extends StatelessWidget {
             ),
 
             ElevatedButton(onPressed: () {MapUtils.openMap(url);}, child: Text("Navodila za pot")),
+
+            Container(
+              child: ElevatedButton(
+                onPressed: () { http.put("https://guarded-dusk-58497.herokuapp.com/like/" + id.toString() + "/" + (like+1).toString()); },
+                child: Text("Priporoči"),),
+            ),
+            Container(
+              child: ElevatedButton(
+                onPressed: () { http.put("https://guarded-dusk-58497.herokuapp.com/dislike/" + id.toString() + "/" + (dislike+1).toString()); },
+                child: Text("Ne Priporoči"),),
+            )
           ],
         ),
       ),
