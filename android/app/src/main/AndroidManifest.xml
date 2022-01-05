@@ -4,6 +4,9 @@
         android:label="emp_flutter_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyAdcIf_VgQcJCF9f-JJw3bV_D4kxoBPRws"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

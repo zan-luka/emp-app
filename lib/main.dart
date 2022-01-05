@@ -6,10 +6,13 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'pallete.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+List _items = [];
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -40,9 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
     readJson();
   }
 
-  List _items = [];
+
 
   Future<void> readJson() async {
+
     final response =  await http.get("https://guarded-dusk-58497.herokuapp.com/poti");
     //final String response = await rootBundle.loadString('assets/routes.json');
     final data = await json.decode(response.body);
@@ -137,6 +141,8 @@ class FirstRoute extends StatelessWidget {
   final int like;
   final int dislike;
 
+  final LatLng _center = const LatLng(45.521563, -122.677433);
+
   const FirstRoute({Key? key, required this.id, required this.naziv, required this.opis, required this.tezavnost, required this.vzpon, required this.url, required this.like, required this.dislike}) : super(key: key);
 
 
@@ -198,14 +204,68 @@ class FirstRoute extends StatelessWidget {
 
                 ElevatedButton(
                   onPressed: () { http.put("https://guarded-dusk-58497.herokuapp.com/dislike/" + id.toString() + "/" + (dislike+1).toString()); },
-                  child: const Text("Ne Priporoči"),)
+                  child: const Text("Ne Priporoči"),),
 
               ],
             ),
             ),
+            Container(
+              height: 300,
+              child: GoogleMap(
+                  initialCameraPosition: _Map()._initPos(id),
+                  onMapCreated: _Map()._onMapCreated,
+                  markers: _Map()._createMarker(id),
+              ),
+            )
           ],
         ),
       ),
     ),
     );
   }}
+
+  class _Map {
+    CameraPosition _initialCameraPosition = CameraPosition(target: LatLng(45.9159, 13.7376), zoom: 11.0);
+
+    late GoogleMapController googleMapController;
+    bool isReady = false;
+
+    double start_x = 0.0;
+    double start_y = 0.0;
+    double cilj_x = 0.0;
+    double cilj_y = 0.0;
+
+    void _onMapCreated(GoogleMapController controller) {
+      googleMapController = controller;
+    }
+
+    CameraPosition _initPos(int id) {
+      start_x = double.parse(_items[id-1]["start_x"]);
+      start_y = double.parse(_items[id-1]["start_y"]);
+      cilj_x = double.parse(_items[id-1]["cilj_x"]);
+      cilj_y = double.parse(_items[id-1]["cilj_y"]);
+      return CameraPosition(target: LatLng(start_x, start_y), zoom: 12);
+    }
+
+    Set<Marker> _createMarker(int id) {
+      start_x = double.parse(_items[id-1]["start_x"]);
+      start_y = double.parse(_items[id-1]["start_y"]);
+      cilj_x = double.parse(_items[id-1]["cilj_x"]);
+      cilj_y = double.parse(_items[id-1]["cilj_y"]);
+
+      return {
+        Marker(
+            markerId: MarkerId("start"),
+            //position: LatLng(double.parse(_items[id]["start_x"]), double.parse(_items[id]["start_y"])),
+            position: LatLng(start_x, start_y),
+            infoWindow: InfoWindow(title: "Start"),
+        ),
+        Marker(
+          markerId: MarkerId("cilj"),
+          //position: LatLng(double.parse(_items[id]["cilj_x"]), double.parse(_items[id]["cilj_y"])),
+          position: LatLng(cilj_x, cilj_y),
+          infoWindow: InfoWindow(title: 'Cilj'),
+        ),
+      };
+    }
+  }
