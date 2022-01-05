@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Kolesarjanci',
       home: MyHomePage(),
@@ -26,6 +26,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -61,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.black45,
-        title: Text("Kolesarjanci"),
+        title: const Text("Kolesarjanci"),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -83,14 +85,14 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            InkWell(
+            /*InkWell(
               onTap: (){
                 MapUtils.openMap("https://www.google.com/maps/dir/?api=1&destination=45.90415729448569,13.91227001019901&waypoints=45.88841973257892, 13.904491768171905|45.89741275863526,13.905123017668604&travelmode=walking&map_action=map&basemap=terrain");
               },
               child: const Text(
                 "BOGATA MAPA",
               ),
-            ),
+            ),*/
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
 
@@ -160,39 +162,48 @@ class FirstRoute extends StatelessWidget {
           children: <Widget>[
             Container(
               alignment: Alignment.topCenter,
-              child: Text(naziv, style: TextStyle(fontSize: 50)),
-              margin: EdgeInsets.only(top: 30, bottom: 30),
+              child: Text(naziv, style: const TextStyle(fontSize: 50)),
+              margin: const EdgeInsets.only(top: 30, bottom: 30),
             ),
             Container(
               alignment: Alignment.topRight,
-              child: Text("Ocena: " + ((like/(like+dislike)*100).toInt()).toString(), style: TextStyle(fontSize: 20)),
-              margin: EdgeInsets.only(right: 20),
+              child: Text("Ocena: " + ((like/(like+dislike)*100).toInt()).toString(), style: const TextStyle(fontSize: 20)),
+              margin: const EdgeInsets.only(right: 20, bottom: 20),
             ),
             Container(
-              child: Text(opis, style: TextStyle(fontSize: 20)),
-              margin: EdgeInsets.only(bottom: 30),
+              child: Text(opis, style: const TextStyle(fontSize: 20)),
+              margin: const EdgeInsets.only(bottom: 30),
             ),
             Container(
-              child: Text("Težavnost: " + tezavnost, style: TextStyle(fontSize: 20)),
-              margin: EdgeInsets.only(bottom: 30),
+              child: Text("Težavnost: " + tezavnost, style: const TextStyle(fontSize: 20)),
+              margin: const EdgeInsets.only(bottom: 30),
             ),
             Container(
-              child: Text("Vzpon: " + vzpon.toString() + "m", style: TextStyle(fontSize: 20)),
-              margin: EdgeInsets.only(bottom: 30),
+              child: Text("Vzpon: " + vzpon.toString() + "m", style: const TextStyle(fontSize: 20)),
+              margin: const EdgeInsets.only(bottom: 30),
             ),
 
-            ElevatedButton(onPressed: () {MapUtils.openMap(url);}, child: Text("Navodila za pot")),
+            ElevatedButton(onPressed: () {MapUtils.openMap(url);}, child: const Text("Navodila za pot")),
 
-            Container(
-              child: ElevatedButton(
-                onPressed: () { http.put("https://guarded-dusk-58497.herokuapp.com/like/" + id.toString() + "/" + (like+1).toString()); },
-                child: Text("Priporoči"),),
+
+            Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+
+                ElevatedButton(
+                  onPressed: () { http.put("https://guarded-dusk-58497.herokuapp.com/like/" + id.toString() + "/" + (like+1).toString()); },
+                  child: const Text("Priporoči"),),
+
+                const SizedBox(width: 10),
+
+                ElevatedButton(
+                  onPressed: () { http.put("https://guarded-dusk-58497.herokuapp.com/dislike/" + id.toString() + "/" + (dislike+1).toString()); },
+                  child: const Text("Ne Priporoči"),)
+
+              ],
             ),
-            Container(
-              child: ElevatedButton(
-                onPressed: () { http.put("https://guarded-dusk-58497.herokuapp.com/dislike/" + id.toString() + "/" + (dislike+1).toString()); },
-                child: Text("Ne Priporoči"),),
-            )
+            ),
           ],
         ),
       ),
