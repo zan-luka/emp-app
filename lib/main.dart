@@ -34,6 +34,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    readJson();
+  }
+
   List _items = [];
 
   Future<void> readJson() async {
@@ -93,14 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 "BOGATA MAPA",
               ),
             ),*/
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-
-                  primary: Colors.teal,
-                ),
-                onPressed: readJson,
-                child: const Text("Ogled vseh kolesarskih poti")
-            ),
             _items.isNotEmpty
             ? Expanded(
                 child: ListView.builder(
@@ -110,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: ListTile(
                           title: Text(_items[index]["naziv"]),
                           subtitle: Text(_items[index]["opis"]),
+                          trailing: Text("Ocena: "+((_items[index]["nice"]/(_items[index]["nice"]+_items[index]["notnice"])*100).toInt()).toString()),
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => FirstRoute(id: _items[index]["id"], naziv: _items[index]["naziv"], opis: _items[index]["opis"], tezavnost: _items[index]["tezavnost"], vzpon: _items[index]["vzpon"], url: _items[index]["url"], like: _items[index]["nice"], dislike: _items[index]["notnice"],)));
                             //MapUtils.openMap(_items[index]["url"]);
