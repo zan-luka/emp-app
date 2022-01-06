@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.black45,
-        title: const Text("Kolesarjanci"),
+        title: const Text("Kolesarske poti v Vipavski dolini"),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -95,14 +95,11 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            /*InkWell(
-              onTap: (){
-                MapUtils.openMap("https://www.google.com/maps/dir/?api=1&destination=45.90415729448569,13.91227001019901&waypoints=45.88841973257892, 13.904491768171905|45.89741275863526,13.905123017668604&travelmode=walking&map_action=map&basemap=terrain");
-              },
-              child: const Text(
-                "BOGATA MAPA",
-              ),
-            ),*/
+            Container(
+              alignment: Alignment.topCenter,
+              child: const Text("Izberi željeno kolesarsko pot:", style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white)),
+              margin: const EdgeInsets.only(top: 20, bottom: 20, left: 10)
+            ),
             _items.isNotEmpty
             ? Expanded(
                 child: ListView.builder(
@@ -112,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: ListTile(
                           title: Text(_items[index]["naziv"]),
                           subtitle: Text(_items[index]["opis"]),
-                          trailing: Text("Ocena: "+((_items[index]["nice"]/(_items[index]["nice"]+_items[index]["notnice"])*100).toInt()).toString()),
+                          trailing: Text(((_items[index]["tezavnost"]))),
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => FirstRoute(index: index, id: _items[index]["id"], naziv: _items[index]["naziv"], opis: _items[index]["opis"], tezavnost: _items[index]["tezavnost"], vzpon: _items[index]["vzpon"], url: _items[index]["url"], like: _items[index]["nice"], dislike: _items[index]["notnice"],)));
                             //MapUtils.openMap(_items[index]["url"]);
