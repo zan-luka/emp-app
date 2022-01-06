@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           subtitle: Text(_items[index]["opis"]),
                           trailing: Text("Ocena: "+((_items[index]["nice"]/(_items[index]["nice"]+_items[index]["notnice"])*100).toInt()).toString()),
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => FirstRoute(id: _items[index]["id"], naziv: _items[index]["naziv"], opis: _items[index]["opis"], tezavnost: _items[index]["tezavnost"], vzpon: _items[index]["vzpon"], url: _items[index]["url"], like: _items[index]["nice"], dislike: _items[index]["notnice"],)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FirstRoute(index: index, id: _items[index]["id"], naziv: _items[index]["naziv"], opis: _items[index]["opis"], tezavnost: _items[index]["tezavnost"], vzpon: _items[index]["vzpon"], url: _items[index]["url"], like: _items[index]["nice"], dislike: _items[index]["notnice"],)));
                             //MapUtils.openMap(_items[index]["url"]);
                             },
                         ),
@@ -132,6 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class FirstRoute extends StatelessWidget {
+  final int index;
   final int id;
   final String naziv;
   final String opis;
@@ -143,52 +144,63 @@ class FirstRoute extends StatelessWidget {
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
 
-  const FirstRoute({Key? key, required this.id, required this.naziv, required this.opis, required this.tezavnost, required this.vzpon, required this.url, required this.like, required this.dislike}) : super(key: key);
+  const FirstRoute({Key? key, required this.index, required this.id, required this.naziv, required this.opis, required this.tezavnost, required this.vzpon, required this.url, required this.like, required this.dislike}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
+      /*
       decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [Colors.blue.shade900, Colors.green.shade400])),
+
+       */
     child: Scaffold(
     backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: Colors.black45,
+        backgroundColor: Pallete.kToDark,
         title: Text(naziv),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
               alignment: Alignment.topCenter,
-              child: Text(naziv, style: const TextStyle(fontSize: 50)),
-              margin: const EdgeInsets.only(top: 30, bottom: 30),
+              child: Text(naziv, style: const TextStyle(fontSize: 30)),
+              margin: const EdgeInsets.only(top: 10, bottom: 25),
             ),
             Container(
-              alignment: Alignment.topRight,
-              child: Text("Ocena: " + ((like/(like+dislike)*100).toInt()).toString(), style: const TextStyle(fontSize: 20)),
-              margin: const EdgeInsets.only(right: 20, bottom: 20),
+              alignment: Alignment.topLeft,
+              child: Text(opis, style: const TextStyle(fontSize: 17)),
+              margin: const EdgeInsets.only(bottom: 20, left: 10),
             ),
             Container(
-              child: Text(opis, style: const TextStyle(fontSize: 20)),
-              margin: const EdgeInsets.only(bottom: 30),
+              alignment: Alignment.topLeft,
+              child: Text("Ocena: " + ((like/(like+dislike)*100).toInt()).toString(), style: const TextStyle(fontSize: 18)),
+              margin: const EdgeInsets.only(bottom: 20, left: 10),
             ),
             Container(
-              child: Text("Težavnost: " + tezavnost, style: const TextStyle(fontSize: 20)),
-              margin: const EdgeInsets.only(bottom: 30),
+              alignment: Alignment.topLeft,
+              child: Text("Težavnost: " + tezavnost, style: const TextStyle(fontSize: 17)),
+              margin: const EdgeInsets.only(bottom: 20, left: 10),
             ),
             Container(
-              child: Text("Vzpon: " + vzpon.toString() + "m", style: const TextStyle(fontSize: 20)),
-              margin: const EdgeInsets.only(bottom: 30),
+              alignment: Alignment.topLeft,
+              child: Text("Vzpon: " + vzpon.toString() + "m", style: const TextStyle(fontSize: 17)),
+              margin: const EdgeInsets.only(bottom: 20, left: 10),
             ),
 
-            ElevatedButton(onPressed: () {MapUtils.openMap(url);}, child: const Text("Navodila za pot")),
+            ElevatedButton(
+                onPressed: () {MapUtils.openMap(url);},
+                child: const Text("Navodila za pot", style: TextStyle(fontSize: 20),),
+                style: ElevatedButton.styleFrom(primary: Pallete.kToDark),
+            ),
 
 
             Center(
@@ -198,13 +210,17 @@ class FirstRoute extends StatelessWidget {
 
                 ElevatedButton(
                   onPressed: () { http.put("https://guarded-dusk-58497.herokuapp.com/like/" + id.toString() + "/" + (like+1).toString()); },
-                  child: const Text("Priporoči"),),
+                  child: const Text("Priporoči"),
+                  style: ElevatedButton.styleFrom(primary: Pallete.kToDark),
+                ),
 
                 const SizedBox(width: 10),
 
                 ElevatedButton(
                   onPressed: () { http.put("https://guarded-dusk-58497.herokuapp.com/dislike/" + id.toString() + "/" + (dislike+1).toString()); },
-                  child: const Text("Ne Priporoči"),),
+                  child: const Text("Ne Priporoči"),
+                  style: ElevatedButton.styleFrom(primary: Pallete.kToDark),
+                ),
 
               ],
             ),
@@ -212,9 +228,9 @@ class FirstRoute extends StatelessWidget {
             Container(
               height: 300,
               child: GoogleMap(
-                  initialCameraPosition: _Map()._initPos(id),
+                  initialCameraPosition: _Map()._initPos(index),
                   onMapCreated: _Map()._onMapCreated,
-                  markers: _Map()._createMarker(id),
+                  markers: _Map()._createMarker(index),
               ),
             )
           ],
@@ -240,18 +256,18 @@ class FirstRoute extends StatelessWidget {
     }
 
     CameraPosition _initPos(int id) {
-      start_x = double.parse(_items[id-1]["start_x"]);
-      start_y = double.parse(_items[id-1]["start_y"]);
-      cilj_x = double.parse(_items[id-1]["cilj_x"]);
-      cilj_y = double.parse(_items[id-1]["cilj_y"]);
-      return CameraPosition(target: LatLng(start_x, start_y), zoom: 12);
+      start_x = double.parse(_items[id]["start_x"]);
+      start_y = double.parse(_items[id]["start_y"]);
+      cilj_x = double.parse(_items[id]["cilj_x"]);
+      cilj_y = double.parse(_items[id]["cilj_y"]);
+      return CameraPosition(target: LatLng(start_x, start_y), zoom: 11);
     }
 
     Set<Marker> _createMarker(int id) {
-      start_x = double.parse(_items[id-1]["start_x"]);
-      start_y = double.parse(_items[id-1]["start_y"]);
-      cilj_x = double.parse(_items[id-1]["cilj_x"]);
-      cilj_y = double.parse(_items[id-1]["cilj_y"]);
+      start_x = double.parse(_items[id]["start_x"]);
+      start_y = double.parse(_items[id]["start_y"]);
+      cilj_x = double.parse(_items[id]["cilj_x"]);
+      cilj_y = double.parse(_items[id]["cilj_y"]);
 
       return {
         Marker(
