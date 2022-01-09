@@ -1,4 +1,4 @@
-# TPO Flutter App
+# TPO Flutter Aplikacija
 
 Projekt za TPO.
 
